@@ -1,11 +1,14 @@
-package com.github.ik024.sunshine;
+package com.github.ik024.sunshine.views;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.github.ik024.sunshine.R;
 
 public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener{
 
@@ -31,6 +34,8 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         int id = item.getItemId();
 
         if (id == R.id.action_settings) {
+            Intent settingsIntent = new Intent(this, SettingsActivity.class);
+            startActivity(settingsIntent);
             return true;
         }
 

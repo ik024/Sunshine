@@ -1,7 +1,8 @@
-package com.github.ik024.sunshine;
+package com.github.ik024.sunshine.views;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -20,18 +21,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.github.ik024.sunshine.presenters.ForecastItemAdapter;
+import com.github.ik024.sunshine.R;
+import com.github.ik024.sunshine.presenters.ForecastHelper;
+import com.github.ik024.sunshine.models.ForecastItem;
+import com.github.ik024.sunshine.models.IForecastListClickListener;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 
-public class ForecastFragment extends Fragment {
+public class ForecastFragment extends Fragment implements IForecastListClickListener {
 
     private static final String TAG = ForecastFragment.class.getSimpleName();
     private OnFragmentInteractionListener mListener;
@@ -58,19 +61,9 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forecast, container, false);
 
-        fakeData();
-
         getForecastData("560005");
 
         rvForecast = (RecyclerView) view.findViewById(R.id.list_view_forecast);
-
-        adapterForecast = new ForecastItemAdapter(forecastListItems);
-
-        rvForecast.setAdapter(adapterForecast);
-
-        rvForecast.setLayoutManager(new LinearLayoutManager(getActivity()));
-
-
 
         return view;
     }
@@ -91,15 +84,14 @@ public class ForecastFragment extends Fragment {
                             .build();
 
         Log.d(TAG, "builtUri: "+builtUri.toString());
-        JsonObjectRequest stringRequest = new JsonObjectRequest(Request.Method.POST,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST,
                 builtUri.toString(),
                 null,
                 new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                //dialog.cancel();
-                Log.d(TAG, "Response: " + response.toString());
-                new ParseForecastResponse().execute(response);//parseResponse(response);
+                String[] params = {response.toString(), "7"};
+                new ParseForecastResponse().execute(params);
             }
 
         }, new Response.ErrorListener() {
@@ -110,19 +102,9 @@ public class ForecastFragment extends Fragment {
             }
         });
 
-        queue.add(stringRequest);
+        queue.add(jsonObjectRequest);
     }
 
-
-    private void fakeData() {
-        forecastListItems = new ArrayList<>();
-        forecastListItems.add(new ForecastItem("Today - Sunny - 88/63"));
-        forecastListItems.add(new ForecastItem("Tomorrow - Foggy - 88/63"));
-        forecastListItems.add(new ForecastItem("Wednesday - Sunny - 88/63"));
-        forecastListItems.add(new ForecastItem("Thursday - Sunny - 88/63"));
-        forecastListItems.add(new ForecastItem("Friday - Sunny - 88/63"));
-        forecastListItems.add(new ForecastItem("Saturday - Sunny - 88/63"));
-    }
 
     @Override
     public void onAttach(Context context) {
@@ -141,44 +123,56 @@ public class ForecastFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void forecastItemClicked(int position) {
+        if (forecastListItems != null) {
+            ForecastItem forecast = forecastListItems.get(position);
+            Toast.makeText(getActivity(), ""+forecast.getItem(), Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(getActivity(), ForecastDetailActivity.class);
+            startActivity(intent);
+        }
+    }
+
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
 
-    public class ParseForecastResponse extends AsyncTask<JSONObject, Void, Void>{
+    public class ParseForecastResponse extends AsyncTask<String, Void, String[]>{
 
         @Override
-        protected Void doInBackground(JSONObject... params) {
+        protected String[] doInBackground(String... params) {
             try {
 
-                JSONArray list = params[0].getJSONArray("list");
+                return ForecastHelper.getWeatherDataFromJson(params[0], Integer.parseInt(params[1]));
 
-                for(int i=0; i<list.length(); i++){
-
-                }
-
-                for(int i=0; i<list.length(); i++){
-                    if(list.length() < 7) {
-                        JSONObject day = list.getJSONObject(i);
-                        if (day.has("temp")) {
-                            JSONObject temp = day.getJSONObject("temp");
-                            double max = temp.getDouble("max");
-                            Log.d(TAG, "max temp: " + max);
-                        } else {
-                            Log.d(TAG, "max temp: -1");
-                        }
-                    }else{
-                        Log.d(TAG, "max temp: -1");
-                    }
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             return null;
         }
 
-        private void getMaxTemp(String json){
+        @Override
+        protected void onPostExecute(String[] weatherData) {
+            super.onPostExecute(weatherData);
+
+            forecastListItems = new ArrayList<>();
+
+            for(String data : weatherData){
+                forecastListItems.add(new ForecastItem(data));
+            }
+
+            adapterForecast = new ForecastItemAdapter(ForecastFragment.this, forecastListItems);
+
+            rvForecast.setAdapter(adapterForecast);
+
+            rvForecast.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+            if(dialog != null) {
+                dialog.cancel();
+            }
 
         }
+
     }
 }

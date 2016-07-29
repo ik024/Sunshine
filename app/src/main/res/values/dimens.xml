@@ -6,4 +6,5 @@
     <dimen name="list_item_text_size">18sp</dimen>
     <dimen name="list_item_text_padding">16dp</dimen>
     <dimen name="action_bar_elevation">5dp</dimen>
+    <dimen name="app_default_padding">16dp</dimen>
 </resources>

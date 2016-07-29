@@ -1,4 +1,4 @@
-package com.github.ik024.sunshine;
+package com.github.ik024.sunshine.models;
 
 /**
  * Created by Ismail.Khan2 on 7/4/2016.
