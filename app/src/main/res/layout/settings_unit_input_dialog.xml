@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RadioGroup
+        android:id="@+id/unit_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/app_default_padding">
+        <RadioButton
+            android:id="@+id/settings_unit_celcius"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Celcius"
+            android:checked="true"/>
+        <RadioButton
+            android:id="@+id/settings_unit_farenhite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Farenhite"/>
+    </RadioGroup>
+
+</LinearLayout>

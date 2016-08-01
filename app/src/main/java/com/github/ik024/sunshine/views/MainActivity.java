@@ -5,12 +5,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.github.ik024.sunshine.R;
 
-public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ForecastFragment.OnFragmentInteractionListener {
 
 
     @Override
@@ -20,6 +21,28 @@ public class MainActivity extends AppCompatActivity implements ForecastFragment.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+       
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey("saved")) {
+            boolean saved = savedInstanceState.getBoolean("saved");
+            if (saved) {
+                Log.d("saved", "true");
+            } else {
+                Log.d("saved", "false");
+            }
+        } else {
+            Log.d("saved", "not called");
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putBoolean("saved", true);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

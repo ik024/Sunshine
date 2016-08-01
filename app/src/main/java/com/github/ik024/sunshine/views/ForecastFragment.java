@@ -48,6 +48,11 @@ public class ForecastFragment extends Fragment implements IForecastListClickList
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
@@ -66,6 +71,11 @@ public class ForecastFragment extends Fragment implements IForecastListClickList
         rvForecast = (RecyclerView) view.findViewById(R.id.list_view_forecast);
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
     }
 
     private void getForecastData(String postalCode){
