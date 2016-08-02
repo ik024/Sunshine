@@ -5,12 +5,16 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.ik024.sunshine.R;
 
@@ -44,7 +48,19 @@ public class ForecastDetailFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_detail, menu);
+
+        // Locate MenuItem with ShareActionProvider
+        MenuItem item = menu.findItem(R.id.menu_item_share);
+
+        // Fetch and store ShareActionProvider
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+    }
+
+    public void forecastItemSelected(String forecastItem){
+        forecast = forecastItem;
+        Toast.makeText(getActivity(), forecastItem, Toast.LENGTH_SHORT).show();
+        tvForecastSelected.setText(forecast);
     }
 
     @Override
@@ -54,6 +70,10 @@ public class ForecastDetailFragment extends Fragment {
             case R.id.action_settings:
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
+            case R.id.menu_item_share:
+                Intent myShareIntent = new Intent(Intent.ACTION_SEND);
+                myShareIntent.setType("text/*");
+                myShareIntent.putExtra(Intent.EXTRA_STREAM, forecast);
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -61,10 +81,23 @@ public class ForecastDetailFragment extends Fragment {
         return true;
     }
 
+    private ShareActionProvider mShareActionProvider;
+    private String forecast="";
+    private TextView tvForecastSelected;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_forecast_detail, container, false);
+        View view = inflater.inflate(R.layout.fragment_forecast_detail, container, false);
+        tvForecastSelected = (TextView) view.findViewById(R.id.tv_forecast_selected);
+        return view;
+    }
+
+    // Call to update the share intent
+    private void setShareIntent(Intent shareIntent) {
+        if (mShareActionProvider != null) {
+            mShareActionProvider.setShareIntent(shareIntent);
+        }
     }
 
     public interface OnFragmentInteractionListener{

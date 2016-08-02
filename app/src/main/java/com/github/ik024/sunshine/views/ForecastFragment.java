@@ -37,6 +37,7 @@ import java.util.List;
 public class ForecastFragment extends Fragment implements IForecastListClickListener {
 
     private static final String TAG = ForecastFragment.class.getSimpleName();
+    public static final String FORECAST_ITEM = "ForecastItem";
     private OnFragmentInteractionListener mListener;
 
     public ForecastFragment() {
@@ -137,8 +138,8 @@ public class ForecastFragment extends Fragment implements IForecastListClickList
     public void forecastItemClicked(int position) {
         if (forecastListItems != null) {
             ForecastItem forecast = forecastListItems.get(position);
-            Toast.makeText(getActivity(), ""+forecast.getItem(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getActivity(), ForecastDetailActivity.class);
+            intent.putExtra(FORECAST_ITEM, ""+forecast.getItem());
             startActivity(intent);
         }
     }
