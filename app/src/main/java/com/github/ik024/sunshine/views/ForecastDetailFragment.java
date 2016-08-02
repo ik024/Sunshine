@@ -55,6 +55,12 @@ public class ForecastDetailFragment extends Fragment {
 
         // Fetch and store ShareActionProvider
         mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
+        if(mShareActionProvider != null){
+            Intent myShareIntent = new Intent(Intent.ACTION_SEND);
+            myShareIntent.setType("text/plain");
+            myShareIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+            setShareIntent(myShareIntent);
+        }
     }
 
     public void forecastItemSelected(String forecastItem){
@@ -71,9 +77,12 @@ public class ForecastDetailFragment extends Fragment {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 break;
             case R.id.menu_item_share:
+                Toast.makeText(getActivity(), "Action Share", Toast.LENGTH_SHORT).show();
                 Intent myShareIntent = new Intent(Intent.ACTION_SEND);
-                myShareIntent.setType("text/*");
-                myShareIntent.putExtra(Intent.EXTRA_STREAM, forecast);
+                myShareIntent.setType("text/plain");
+                myShareIntent.putExtra(Intent.EXTRA_TEXT, forecast);
+                setShareIntent(myShareIntent);
+                break;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -29,8 +29,6 @@ public class ForecastDetailActivity extends AppCompatActivity implements Forecas
             forecastItem = intent.getStringExtra(ForecastFragment.FORECAST_ITEM);
         }
 
-
-
         fdf.forecastItemSelected(forecastItem);
     }
 

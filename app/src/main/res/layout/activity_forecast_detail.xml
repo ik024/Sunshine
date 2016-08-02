@@ -7,12 +7,15 @@
     android:fitsSystemWindows="true"
     tools:context=".views.ForecastDetailActivity">
 
-    <include layout="@layout/action_bar" />
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/action_bar" />
 
     <fragment
         android:id="@+id/frament_forecast_details"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:name="com.github.ik024.sunshine.views.ForecastDetailFragment"
         tools:layout="@layout/fragment_forecast_detail" />
 
